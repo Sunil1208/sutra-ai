@@ -1,69 +1,70 @@
 {
-  "name": "sutra-ai",
-  "version": "1.0.0",
-  "description": "SutraAi is an AI orchestration gateway that dynamically routes requests between multiple Large Language Models (LLMs) — like GPT-4o, Claude, and Gemini — based on latency, cost, and reasoning complexity. Built with Node.js, Fastify, Redis, BullMQ, and pgvector, it brings intelligence, observability, and scalability to multi-model AI systems.",
-  "main": "index.js",
-  "scripts": {
-    "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "rimraf dist && tsc",
-    "start": "node dist/server.js",
-    "test": "mocha",
-    "test:cov": "nyc npm run test",
-    "lint": "eslint \"src/**/*.{ts,js}\"",
-    "lint:fix": "eslint \"src/**/*.{ts,js}\" --fix",
-    "format": "prettier --write \"src/**/*.{ts,js,json,md}\""
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Sunil1208/sutra-ai.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "commonjs",
-  "bugs": {
-    "url": "https://github.com/Sunil1208/sutra-ai/issues"
-  },
-  "homepage": "https://github.com/Sunil1208/sutra-ai#readme",
-  "dependencies": {
-    "dotenv": "^17.2.3",
-    "fastify": "^5.6.1",
-    "pino": "^10.1.0",
-    "zod": "^4.1.12"
-  },
-  "devDependencies": {
-    "@types/chai": "^5.2.3",
-    "@types/mocha": "^10.0.10",
-    "@types/node": "^24.10.0",
-    "@types/pino": "^7.0.4",
-    "@types/supertest": "^6.0.3",
-    "@typescript-eslint/eslint-plugin": "^8.46.3",
-    "@typescript-eslint/parser": "^8.46.3",
-    "chai": "^6.2.0",
-    "eslint": "^9.39.1",
-    "eslint-config-prettier": "^10.1.8",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-prettier": "^5.5.4",
-    "mocha": "^11.7.4",
-    "nyc": "^17.1.0",
-    "prettier": "^3.6.2",
-    "rimraf": "^6.1.0",
-    "supertest": "^7.1.4",
-    "ts-node": "^10.9.2",
-    "ts-node-dev": "^2.0.0",
-    "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.9.3"
-  },
-  "mocha": {
-    "require": [
-      "ts-node/register/transpile-only",
-      "tsconfig-paths/register"
-    ],
-    "extension": [
-      "ts"
-    ],
-    "spec": "tests/**/*.test.ts",
-    "timeout": 10000,
-    "exit": true
-  }
+    "name": "sutra-ai",
+    "version": "1.0.0",
+    "description": "SutraAi is an AI orchestration gateway that dynamically routes requests between multiple Large Language Models (LLMs) — like GPT-4o, Claude, and Gemini — based on latency, cost, and reasoning complexity. Built with Node.js, Fastify, Redis, BullMQ, and pgvector, it brings intelligence, observability, and scalability to multi-model AI systems.",
+    "main": "index.js",
+    "scripts": {
+        "dev": "ts-node-dev --respawn --transpile-only --require tsconfig-paths/register src/server.ts",
+        "build": "rimraf dist && tsc",
+        "start": "node dist/server.js",
+        "test": "mocha",
+        "test:cov": "nyc npm run test",
+        "lint": "eslint \"src/**/*.{ts,js}\"",
+        "lint:fix": "eslint \"src/**/*.{ts,js}\" --fix",
+        "format": "prettier --write \"src/**/*.{ts,js,json,md}\""
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Sunil1208/sutra-ai.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "commonjs",
+    "bugs": {
+        "url": "https://github.com/Sunil1208/sutra-ai/issues"
+    },
+    "homepage": "https://github.com/Sunil1208/sutra-ai#readme",
+    "dependencies": {
+        "dotenv": "^17.2.3",
+        "fastify": "^5.6.1",
+        "pino": "^10.1.0",
+        "zod": "^4.1.12"
+    },
+    "devDependencies": {
+        "@types/chai": "^5.2.3",
+        "@types/mocha": "^10.0.10",
+        "@types/node": "^24.10.0",
+        "@types/pino": "^7.0.4",
+        "@types/supertest": "^6.0.3",
+        "@typescript-eslint/eslint-plugin": "^8.46.3",
+        "@typescript-eslint/parser": "^8.46.3",
+        "chai": "^6.2.0",
+        "eslint": "^9.39.1",
+        "eslint-config-prettier": "^10.1.8",
+        "eslint-plugin-import": "^2.32.0",
+        "eslint-plugin-prettier": "^5.5.4",
+        "mocha": "^11.7.4",
+        "nyc": "^17.1.0",
+        "pino-pretty": "^13.1.2",
+        "prettier": "^3.6.2",
+        "rimraf": "^6.1.0",
+        "supertest": "^7.1.4",
+        "ts-node": "^10.9.2",
+        "ts-node-dev": "^2.0.0",
+        "tsconfig-paths": "^4.2.0",
+        "typescript": "^5.9.3"
+    },
+    "mocha": {
+        "require": [
+            "ts-node/register/transpile-only",
+            "tsconfig-paths/register"
+        ],
+        "extension": [
+            "ts"
+        ],
+        "spec": "tests/**/*.test.ts",
+        "timeout": 10000,
+        "exit": true
+    }
 }

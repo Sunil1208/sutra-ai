@@ -1,59 +1,41 @@
 {
-  // Visit https://aka.ms/tsconfig to read more about this file
-  "compilerOptions": {
-    /* === Build & File Layout === */
-    "rootDir": "./src",
-    "outDir": "./dist",
-    /* === Module System === */
-    // Environment Settings
-    // See also https://aka.ms/tsconfig/module
-    "module": "commonjs", // for fastify,, jest , bullmq compatibility
-    "target": "es2022",
-    "moduleResolution": "node",
-    "esModuleInterop": true, // Enables `import fs from 'fs'` syntax
-    "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    /* == Type Checking === */
-    "strict": true,
-    "forceConsistentCasingInFileNames": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
-    "skipLibCheck": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    /* === Base URL and Aliases === */
-    "baseUrl": "./src",
-    "paths": {
-      "@config/*": [
-        "config/*"
-      ],
-      "@utils/*": [
-        "utils/*"
-      ],
-      "@routes/*": [
-        "routes/*"
-      ],
-      "@controllers/*": [
-        "controllers/*"
-      ],
-      "@services/*": [
-        "services/*"
-      ],
-      "@workers/*": [
-        "workers/*"
-      ]
+    // Visit https://aka.ms/tsconfig to read more about this file
+    "compilerOptions": {
+        /* === Build & File Layout === */
+        "rootDir": "src",
+        "outDir": "dist",
+        /* === Module System === */
+        // Environment Settings
+        // See also https://aka.ms/tsconfig/module
+        "module": "commonjs", // for fastify,, jest , bullmq compatibility
+        "target": "es2022",
+        "moduleResolution": "node",
+        "esModuleInterop": true, // Enables `import fs from 'fs'` syntax
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        /* == Type Checking === */
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "noUncheckedIndexedAccess": true,
+        "exactOptionalPropertyTypes": true,
+        "skipLibCheck": true,
+        "isolatedModules": true,
+        "moduleDetection": "force",
+        /* === Base URL and Aliases === */
+        "baseUrl": "src",
+        "paths": {
+            "@config/*": ["config/*"],
+            "@utils/*": ["utils/*"],
+            "@routes/*": ["routes/*"],
+            "@controllers/*": ["controllers/*"],
+            "@services/*": ["services/*"],
+            "@workers/*": ["workers/*"]
+        },
+        /* === Source Maps and Declarations === */
+        "sourceMap": true,
+        "declaration": true,
+        "declarationMap": true
     },
-    /* === Source Maps and Declarations === */
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-  },
-  "include": [
-    "src/**/*",
-    "tests/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist"
-  ]
+    "include": ["src/**/*", "tests/**/*"],
+    "exclude": ["node_modules", "dist"]
 }
