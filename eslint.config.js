@@ -32,7 +32,7 @@ module.exports = [
           trailingComma: "none",
           bracketSpacing: true,
           endOfLine: "lf",
-          tabWidth: 2,
+          tabWidth: 4,
           useTabs: false
         }
       ],
