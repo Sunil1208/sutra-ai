@@ -1,5 +1,5 @@
 import { config } from "@config/env";
-import { buildApp } from "app";
+import { buildApp } from "@root/app";
 
 const startServer = async () => {
     const app = buildApp();

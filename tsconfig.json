@@ -24,6 +24,7 @@
         /* === Base URL and Aliases === */
         "baseUrl": "src",
         "paths": {
+            "@root/*": ["*"],
             "@config/*": ["config/*"],
             "@utils/*": ["utils/*"],
             "@routes/*": ["routes/*"],

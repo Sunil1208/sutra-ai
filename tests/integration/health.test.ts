@@ -1,17 +1,17 @@
-import { buildApp } from "app";
+import { createTestApp, closeTestApp } from "@root/utils/setup";
 import { expect } from "chai";
 import request from "supertest";
+import type { FastifyInstance } from "fastify";
 
 describe("GET /health", () => {
-    let app: ReturnType<typeof buildApp>;
+    let app: FastifyInstance;
 
     before(async () => {
-        app = buildApp();
-        await app.ready(); // wait for Fastify to be ready before running tests
+        app = await createTestApp();
     });
 
     after(async () => {
-        await app.close(); // close the app after tests
+        await closeTestApp(app);
     });
 
     it("should return service health info", async () => {
