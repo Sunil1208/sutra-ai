@@ -1,5 +1,5 @@
 import { buildApp } from "@root/app";
-import type { FastifyInstance, FastifyPluginAsync } from "fastify";
+import type { FastifyInstance } from "fastify";
 
 interface createTestAppOptions {
     /**
