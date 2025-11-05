@@ -1,3 +1,4 @@
+import { ValidationError } from "@root/utils/errors";
 import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 import { ZodType, ZodError } from "zod";
@@ -9,14 +10,9 @@ async function validationPluginFn(app: FastifyInstance) {
     app.decorate("validate", <T>(shema: ZodType<T>, payload: unknown): T => {
         const result = shema.safeParse(payload);
         if (!result.success) {
-            const zodError = result.error as ZodError;
-            const message = zodError.issues
-                .map((e) => `${e.path.join(".")}: ${e.message}`)
-                .join(", ");
-            const err: any = new Error(message);
-            err.statusCode = 400;
-            err.code = "VALIDATION_ERROR";
-            throw err;
+            const error = result.error as ZodError;
+            const message = error.issues.map((e) => `${e.path.join(".")}: ${e.message}`).join(", ");
+            throw new ValidationError(message, result.error.issues);
         }
         return result.data;
     });

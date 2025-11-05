@@ -1,4 +1,5 @@
 import { HealthRequestSchema, HealthResponseSchema } from "@root/schemas/health.schema";
+import { sendSuccess } from "@utils/response.utils";
 import { FastifyReply, FastifyRequest } from "fastify";
 
 export const getHealth = async (req: FastifyRequest, reply: FastifyReply) => {
@@ -15,5 +16,5 @@ export const getHealth = async (req: FastifyRequest, reply: FastifyReply) => {
 
     // Validate response before sending
     req.server.validate(HealthResponseSchema, data);
-    return reply.code(200).send(data);
+    return reply.code(200).send(sendSuccess("Service healthy", data));
 };

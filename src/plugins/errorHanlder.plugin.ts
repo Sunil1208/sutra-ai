@@ -22,6 +22,7 @@
  *   }
  */
 
+import { ApiError } from "@utils/errors";
 import { FastifyInstance, FastifyError, FastifyReply, FastifyRequest } from "fastify";
 import fp from "fastify-plugin";
 
@@ -31,6 +32,8 @@ import fp from "fastify-plugin";
  */
 async function errorHandler(app: FastifyInstance) {
     app.setErrorHandler((error: FastifyError, request: FastifyRequest, reply: FastifyReply) => {
+        const isApiError = error instanceof ApiError;
+        const statusCode = isApiError ? error.statusCode : (error.statusCode ?? 500);
         // Log the error with request metadata for debugging
         app.log.error(
             {
@@ -41,14 +44,12 @@ async function errorHandler(app: FastifyInstance) {
             " -> Unhandled Error"
         );
 
-        // Default to HTTP 500 unless the error provides a specific status code
-        const statusCode = error.statusCode ?? 500;
-
         // Send a consistent, machine-readable response
         reply.status(statusCode).send({
             success: false,
             message: error.message || "Internal Server Error",
-            errorCodes: error.code || "INTERNAL_SERVER_ERROR",
+            errorCodes: isApiError ? error.code : "INTERNAL_SERVER_ERROR",
+            details: isApiError ? error.details : undefined,
             timestamp: new Date().toISOString()
         });
     });

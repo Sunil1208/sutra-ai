@@ -18,7 +18,7 @@ describe("GET /health", () => {
         const res = await request(app.server).get("/health/");
 
         expect(res.status).to.equal(200);
-        expect(res.body.status).to.equal("ok");
-        expect(res.body.service).to.equal("sutra-ai");
+        expect(res.body.data.status).to.equal("ok");
+        expect(res.body.data.service).to.equal("sutra-ai");
     });
 });
