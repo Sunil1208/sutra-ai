@@ -30,7 +30,8 @@
             "@routes/*": ["routes/*"],
             "@controllers/*": ["controllers/*"],
             "@services/*": ["services/*"],
-            "@workers/*": ["workers/*"]
+            "@workers/*": ["workers/*"],
+            "@plugins/*": ["plugins/*"]
         },
         /* === Source Maps and Declarations === */
         "sourceMap": true,
