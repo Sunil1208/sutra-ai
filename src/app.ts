@@ -4,6 +4,7 @@ import healthRoute from "@routes/health.route";
 import { loggingPlugin } from "@plugins/logging.plugin";
 import { errorHandlerPlugin } from "@plugins/errorHanlder.plugin";
 import { validationPlugin } from "@plugins/validation.plugin";
+import registerRoutesPlugin from "@plugins/registerRoutes.plugin";
 
 export const buildApp = () => {
     // create the app with basic logger enabled
@@ -30,6 +31,8 @@ export const buildApp = () => {
 
     // Register routes
     app.register(healthRoute, { prefix: "/health" });
+
+    app.register(registerRoutesPlugin);
 
     app.get("/", async () => ({
         status: "ok",
