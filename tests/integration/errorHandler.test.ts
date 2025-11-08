@@ -1,4 +1,4 @@
-import { createTestApp, closeTestApp } from "@root/utils/setup";
+import { createTestApp, closeTestApp } from "@utils/setup";
 import { expect } from "chai";
 import request from "supertest";
 import type { FastifyInstance } from "fastify";

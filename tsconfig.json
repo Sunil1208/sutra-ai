@@ -29,10 +29,11 @@
             "@utils/*": ["utils/*"],
             "@routes": ["routes/index.ts"],
             "@controllers": ["controllers/index.ts"],
-            "@services/*": ["services/*"],
+            "@services": ["services/index.ts"],
             "@workers/*": ["workers/*"],
             "@plugins": ["plugins/index.ts"],
-            "@schemas": ["schemas/index.ts"]
+            "@schemas": ["schemas/index.ts"],
+            "@providers": ["providers/index.ts"]
         },
         /* === Source Maps and Declarations === */
         "sourceMap": true,
