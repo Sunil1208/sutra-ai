@@ -33,7 +33,8 @@
             "@workers/*": ["workers/*"],
             "@plugins": ["plugins/index.ts"],
             "@schemas": ["schemas/index.ts"],
-            "@providers": ["providers/index.ts"]
+            "@providers": ["providers/index.ts"],
+            "@lib/*": ["lib/*"]
         },
         /* === Source Maps and Declarations === */
         "sourceMap": true,

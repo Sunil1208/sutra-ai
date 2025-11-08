@@ -17,9 +17,9 @@ export const buildApp = () => {
     app.log = logger;
 
     // Debug helper — prints every plugin registration prefix to ensure order
-    app.addHook("onRegister", (instance, opts) => {
-        console.log("Plugin registered:", opts.prefix || "root");
-    });
+    // app.addHook("onRegister", (instance, opts) => {
+    //     console.log("Plugin registered:", opts.prefix || "root");
+    // });
 
     /**
      * IMPORTANT: Global Error Handler should be registered first

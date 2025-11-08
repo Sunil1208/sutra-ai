@@ -1,4 +1,7 @@
 import { GPTProvider, ClaudeProvider, GeminiProvider, IModelProvider } from "@providers";
+import { createHash } from "@utils/hash.utils";
+import { getCache, setCache } from "@utils/cache.utils";
+import { logger } from "@utils/loggers";
 
 /**
  * Orchestrator Service
@@ -37,8 +40,23 @@ export class OrchestratorService {
         prompt: string,
         strategy: "auto" | keyof OrchestratorService["providers"] = "auto"
     ) {
+        // 1.1. Create a cache key for idempotency
+        const cacheKey = createHash({ prompt, strategy });
+
+        // 1.2. Try Redis cache first
+        const cached = await getCache(cacheKey);
+        if (cached) {
+            logger.info(
+                { strategy, cacheHit: true },
+                `[Router] Cache hit for strategy=${strategy}`
+            );
+            return {
+                ...cached,
+                cached: true
+            };
+        }
         /**
-         * Step 1: Manual Override
+         * Step 2: Manual Override
          * If explicit model requested, (manual override)
          * Skip all scoring logic and directly route to that model
          */
@@ -50,14 +68,14 @@ export class OrchestratorService {
             return provider.sendPrompt(prompt);
         }
         /**
-         * Step 2: Estimate prompt Complexity
+         * Step 3: Estimate prompt Complexity
          * A rough heuristic -longer text or more questions = more complex task.
          * In later point, these would be dynamic values based on historical data
          */
         const complexity = this.estimateComplexity(prompt);
 
         /**
-         * Step 3: Define Model Profiles
+         * Step 4: Define Model Profiles
          * For now, mock values that simulate:
          * - cost: relative price per reqeuest (1= cheap, 3= expensive)
          * - latency: avgerage response time in ms
@@ -82,7 +100,7 @@ export class OrchestratorService {
         ];
 
         /**
-         * Step 4: Compujte weighted score for each model
+         * Step 5: Compujte weighted score for each model
          * Formula:
          *  score = (cost * 0.4) + (latency * 0.6) + (complexity * 0.2)
          * - cost -> matters for budget-conscious routing (40%)
@@ -103,7 +121,7 @@ export class OrchestratorService {
         ranked.sort((a, b) => a.score - b.score);
 
         /**
-         * Step 5: Route to best model
+         * Step 6: Route to best model
          * Select the top-ranked provider and route the prompt
          */
         const chosen = ranked[0];
@@ -112,14 +130,24 @@ export class OrchestratorService {
             throw new Error("No suitable model found after ranking - orchestration aborted.");
         }
         const provider = this.providers[chosen.key];
-        const result = await provider.sendPrompt(prompt);
+        const result = await provider.sendPrompt(prompt); // TODO: need to handle the type check issue here for provider
 
-        // Attach decision metadata for observability (logs or metrics)
-        return {
+        const resonse = {
             ...result,
             chosenStrategy: chosen.key,
-            decisionBasis: ranked
+            decisionBasis: ranked,
+            cached: false
         };
+
+        // Step 7: Cache the decision for future identical requests
+        await setCache(cacheKey, resonse, 600); // Cache for 10 minutes
+
+        logger.info(
+            { chosen: chosen.key, score: chosen.score },
+            "[Router] Response cached successfully"
+        );
+
+        return resonse;
     }
 
     /**
