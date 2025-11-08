@@ -1,11 +1,12 @@
-import { chatRoutes } from "@root/routes/chat.route";
+import { chatRoutes, healthRoute } from "@routes";
 import { FastifyInstance } from "fastify";
 import fp from "fastify-plugin";
 
-async function registerRoutesPlugin(app: FastifyInstance) {
-    app.register(chatRoutes);
+async function registerRoutes(app: FastifyInstance) {
+    app.register(chatRoutes, { prefix: "/v1/chat" });
+    app.register(healthRoute, { prefix: "/health" });
 }
 
-export default fp(registerRoutesPlugin, {
+export const registerRoutesPlugin = fp(registerRoutes, {
     name: "registerRoutesPlugin"
 });

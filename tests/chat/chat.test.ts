@@ -1,8 +1,10 @@
-import { ChatRequestSchema, ChatResponseSchema } from "@root/schemas/chat.schema";
+import { ChatSchemas } from "@schemas";
 import { createTestApp, closeTestApp } from "@root/utils/setup";
 import { expect } from "chai";
 import { FastifyInstance } from "fastify";
 import request from "supertest";
+
+const { Request: ChatRequestSchema, Response: ChatResponseSchema } = ChatSchemas;
 
 describe("Chat Route", () => {
     let app: FastifyInstance;

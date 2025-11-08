@@ -27,11 +27,12 @@
             "@root/*": ["*"],
             "@config/*": ["config/*"],
             "@utils/*": ["utils/*"],
-            "@routes/*": ["routes/*"],
-            "@controllers/*": ["controllers/*"],
+            "@routes": ["routes/index.ts"],
+            "@controllers": ["controllers/index.ts"],
             "@services/*": ["services/*"],
             "@workers/*": ["workers/*"],
-            "@plugins/*": ["plugins/*"]
+            "@plugins": ["plugins/index.ts"],
+            "@schemas": ["schemas/index.ts"]
         },
         /* === Source Maps and Declarations === */
         "sourceMap": true,

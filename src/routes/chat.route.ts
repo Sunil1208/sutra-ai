@@ -1,6 +1,6 @@
-import { chatController } from "@controllers/chat.controller";
+import { chatController } from "@controllers";
 import { FastifyInstance } from "fastify";
 
 export async function chatRoutes(app: FastifyInstance) {
-    app.post("/v1/chat", chatController.handleChat);
+    app.post("", chatController.handleChat);
 }

@@ -1,6 +1,8 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { ChatRequestSchema, ChatResponseSchema } from "@root/schemas/chat.schema";
+import { ChatSchemas } from "@schemas";
 import { sendSuccess } from "@root/utils/response.utils";
+
+const { Request: ChatRequestSchema, Response: ChatResponseSchema } = ChatSchemas;
 
 export const chatController = {
     async handleChat(req: FastifyRequest, reply: FastifyReply) {

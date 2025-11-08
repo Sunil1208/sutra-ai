@@ -1,6 +1,6 @@
-import { getHealth } from "@controllers/health.controller";
+import { healthController } from "@controllers";
 import { FastifyInstance } from "fastify";
 
-export default async function healthRoute(app: FastifyInstance) {
-    app.get("/", getHealth);
+export async function healthRoute(app: FastifyInstance) {
+    app.get("/", healthController.getHealth);
 }
