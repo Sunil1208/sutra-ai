@@ -11,6 +11,11 @@ describe("Integration - Logging Plugin", () => {
         app = await createTestApp({
             setupRoutes: async (instance) => {
                 instance.get("/log-test", async () => ({ ok: true }));
+                instance.get("/concurrent-log-test", async () => {
+                    // small delay to overlap responses
+                    await new Promise((res) => setTimeout(res, Math.random() * 30));
+                    return { ok: true };
+                });
             }
         });
 
@@ -56,5 +61,34 @@ describe("Integration - Logging Plugin", () => {
 
         // status code should be present
         expect(outgoing.data).to.have.property("statusCode");
+    });
+
+    it("should assign unique traceIds for concurrent requests", async () => {
+        const PARALLEL_REQUEST_COUNT = 5;
+        const requests = Array.from({ length: PARALLEL_REQUEST_COUNT }).map(() => {
+            return request(app.server).get("/concurrent-log-test");
+        });
+        const responses = await Promise.all(requests);
+        responses.forEach((res) => expect(res.status).to.equal(200));
+
+        // group logs by traceId
+        const outgoingLogs = logs.filter((log) => log.msg?.includes("<- Response sent"));
+        expect(outgoingLogs.length).to.equal(PARALLEL_REQUEST_COUNT);
+
+        const traceIds = outgoingLogs.map((log) => log.data.traceId);
+        const uniqueTraceIds = new Set(traceIds);
+
+        // All traceIds should be unique and should have length of UUID v4
+        uniqueTraceIds.forEach((traceId) => {
+            expect(traceId).to.be.a("string");
+            expect(traceId.length).to.equal(36);
+        });
+        expect(uniqueTraceIds.size).to.equal(traceIds.length);
+
+        // Each traceId should appear exaclty twice (incoming + outgoing)
+        uniqueTraceIds.forEach((id) => {
+            const count = logs.filter((log) => log.data.traceId && log.data.traceId === id).length;
+            expect(count).to.equal(2, `TraceId ${id} does not have exactly 2 log entries`);
+        });
     });
 });
