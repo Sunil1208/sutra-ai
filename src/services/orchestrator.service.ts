@@ -1,7 +1,9 @@
 import { GPTProvider, ClaudeProvider, GeminiProvider, IModelProvider } from "@providers";
 import { createHash } from "@utils/hash.utils";
 import { getCache, setCache } from "@utils/cache.utils";
+import { recordCacheEvent, recordModelLatency } from "@utils/metric.utils";
 import { logger } from "@utils/loggers";
+import type { FastifyInstance } from "fastify";
 
 /**
  * Orchestrator Service
@@ -37,6 +39,7 @@ export class OrchestratorService {
      * @param strategy -> explicit model name or "auto" for dynamic routing
      */
     async routePrompt(
+        app: FastifyInstance,
         prompt: string,
         strategy: "auto" | keyof OrchestratorService["providers"] = "auto"
     ) {
@@ -46,6 +49,7 @@ export class OrchestratorService {
         // 1.2. Try Redis cache first
         const cached = await getCache(cacheKey);
         if (cached) {
+            recordCacheEvent(app, true);
             logger.info(
                 { strategy, cacheHit: true },
                 `[Router] Cache hit for strategy=${strategy}`
@@ -55,6 +59,7 @@ export class OrchestratorService {
                 cached: true
             };
         }
+        recordCacheEvent(app, false);
         /**
          * Step 2: Manual Override
          * If explicit model requested, (manual override)
@@ -65,7 +70,26 @@ export class OrchestratorService {
             if (!provider) {
                 throw new Error(`Unknown provider: ${strategy}`);
             }
-            return provider.sendPrompt(prompt);
+            const startTime = Date.now();
+            const result = await provider.sendPrompt(prompt);
+            const latency = Date.now() - startTime;
+            recordModelLatency(app, strategy, latency);
+
+            const resonse = {
+                ...result,
+                chosenStrategy: strategy,
+                decisionBasis: null,
+                cached: false
+            };
+
+            // Cache the response for future identical requests
+            await setCache(cacheKey, resonse, 600); // Cache for 10 minutes
+
+            logger.info(
+                { strategy, latency },
+                `[Router] Manual routing to ${strategy} completed in ${latency}ms`
+            );
+            return resonse;
         }
         /**
          * Step 3: Estimate prompt Complexity
@@ -130,9 +154,12 @@ export class OrchestratorService {
             throw new Error("No suitable model found after ranking - orchestration aborted.");
         }
         const provider = this.providers[chosen.key];
+        const startInvoke = Date.now();
         const result = await provider.sendPrompt(prompt); // TODO: need to handle the type check issue here for provider
+        const latencyMs = Date.now() - startInvoke;
+        recordModelLatency(app, chosen.key, latencyMs);
 
-        const resonse = {
+        const response = {
             ...result,
             chosenStrategy: chosen.key,
             decisionBasis: ranked,
@@ -140,14 +167,14 @@ export class OrchestratorService {
         };
 
         // Step 7: Cache the decision for future identical requests
-        await setCache(cacheKey, resonse, 600); // Cache for 10 minutes
+        await setCache(cacheKey, response, 600); // Cache for 10 minutes
 
         logger.info(
             { chosen: chosen.key, score: chosen.score },
             "[Router] Response cached successfully"
         );
 
-        return resonse;
+        return response;
     }
 
     /**

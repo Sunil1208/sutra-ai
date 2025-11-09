@@ -4,7 +4,8 @@ import {
     loggingPlugin,
     errorHandlerPlugin,
     validationPlugin,
-    registerRoutesPlugin
+    registerRoutesPlugin,
+    metricsPlugin
 } from "@plugins";
 
 export const buildApp = () => {
@@ -28,6 +29,7 @@ export const buildApp = () => {
     app.register(errorHandlerPlugin);
 
     app.register(loggingPlugin);
+    app.register(metricsPlugin); // Prometheus metrics instrumentation
     app.register(validationPlugin);
 
     // Register routes

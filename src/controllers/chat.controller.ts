@@ -13,7 +13,7 @@ export const chatController = {
         const { messages, model } = payload;
         const userPrompt = messages.map((m) => m.content).join("\n");
 
-        const result = await orchestratorService.routePrompt(userPrompt, model as any);
+        const result = await orchestratorService.routePrompt(req.server, userPrompt, model as any);
 
         const response = {
             success: true,
