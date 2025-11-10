@@ -35,9 +35,8 @@ export function getRedisClient(): Redis {
         redisInstance.on("error", (err) => {
             console.error("[Redis] Error:", err);
         });
-
-        return redisInstance;
     }
+    return redisInstance;
 }
 
 // Gracefully close Redis (for testing/shutdown hooks)

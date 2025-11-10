@@ -5,7 +5,8 @@ import {
     errorHandlerPlugin,
     validationPlugin,
     registerRoutesPlugin,
-    metricsPlugin
+    metricsPlugin,
+    rateLimitPlugin
 } from "@plugins";
 import { jobsRoute } from "@routes";
 
@@ -31,6 +32,7 @@ export const buildApp = () => {
 
     app.register(loggingPlugin);
     app.register(metricsPlugin); // Prometheus metrics instrumentation
+    app.register(rateLimitPlugin); // Rate limiting plugin
     app.register(validationPlugin);
 
     // Register routes

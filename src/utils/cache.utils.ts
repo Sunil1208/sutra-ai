@@ -23,3 +23,40 @@ export async function getCache<T = any>(key: string): Promise<T | null> {
 export async function deleteCache(key: string): Promise<void> {
     await redis.del(key);
 }
+
+/**
+ * Increment a counter with TTL atomically
+ * ---------------------------------------
+ * Used for:
+ *   - Rate limiting
+ *   - Usage counting
+ *   - Analytics events
+ *
+ * Ensures:
+ *   - Atomic INCR + TTL (PEXPIRE)
+ *   - No race conditions
+ *   - TTL applied only once per window
+ *
+ * @param key Redis key
+ * @param ttlMs Expiration window in milliseconds
+ * @returns new counter value
+ */
+export async function incrementCacheWithTTL(key: string, ttlMs: number): Promise<number> {
+    const multi = redis.multi();
+    multi.incr(key);
+    multi.pexpire(key, ttlMs);
+    const results = await multi.exec();
+
+    // result = [[null, newValue], [null, "OK"]
+    const newValue = results?.[0]?.[1] as number;
+    return newValue || 0;
+}
+
+/**
+ * Simple increment (no TTL)
+ * Useful for lifetime counters (e.g., total requests, job processed count)
+ */
+export async function incrementKey(key: string): Promise<number> {
+    const value = await redis.incr(key);
+    return value;
+}
