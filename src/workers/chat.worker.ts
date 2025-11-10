@@ -1,17 +1,16 @@
 import { Worker } from "bullmq";
-import { getRedisClient } from "@lib/redis.client";
 import { orchestratorService } from "@services";
 import { logger } from "@utils/loggers";
 import { recordModelLatency } from "@utils/metric.utils";
 import { FastifyInstance } from "fastify";
 import Fastify from "fastify";
-
+import { setCache } from "@utils/cache.utils";
+import { getRedisClient } from "@root/lib/redis.client";
 /**
  * Background worker for ChatQueue
  * Consumes job from "chatQueue" and runs orchestrator logic
  */
 const app: FastifyInstance = Fastify();
-
 const redisConnection = getRedisClient();
 
 const worker = new Worker(
@@ -29,27 +28,27 @@ const worker = new Worker(
             const latencyMs = Date.now() - startTime;
             recordModelLatency(app, result.modelUsed || result.chosenStrategy, latencyMs);
 
-            // Save reuslt in Redis with short TTL (10 min)
-            await redisConnection.setex(
+            // Save result in Redis with short TTL (10 min)
+            await setCache(
                 `job:${job.id}`,
-                600,
                 JSON.stringify({
                     status: "completed",
                     data: result
-                })
+                }),
+                600
             );
 
             logger.info({ jobId: job.id, latencyMs }, "[ChatWorker] Job completed successfully");
             return result;
         } catch (error) {
             logger.error({ jobId: job.id, error }, "[ChatWorker] Job failed");
-            await redisConnection.setex(
+            await setCache(
                 `job:${job.id}`,
-                600,
                 JSON.stringify({
                     status: "failed",
                     error: (error as Error).message
-                })
+                }),
+                600
             );
             throw error;
         }

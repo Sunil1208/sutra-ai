@@ -30,11 +30,17 @@ const cacheMissCounter = new client.Counter({
     labelNames: ["cache_name"]
 });
 
+const jobProcessedCounter = new client.Counter({
+    name: "sutraai_jobs_processed_total",
+    help: "Total number of jobs processed"
+});
+
 // Register Metrics
 metricsRegistry.registerMetric(httpRequestCounter);
 metricsRegistry.registerMetric(modelLatencyHistogram);
 metricsRegistry.registerMetric(cacheHitCounter);
 metricsRegistry.registerMetric(cacheMissCounter);
+metricsRegistry.registerMetric(jobProcessedCounter);
 
 // Collect Node default metrics
 client.collectDefaultMetrics({ register: metricsRegistry });
@@ -65,6 +71,9 @@ export const metricsPlugin = fp(async (app: FastifyInstance) => {
         },
         recordCacheMiss() {
             cacheMissCounter.inc();
+        },
+        recordJobProcessed() {
+            jobProcessedCounter.inc();
         }
     });
 });
