@@ -7,6 +7,7 @@ import {
     registerRoutesPlugin,
     metricsPlugin
 } from "@plugins";
+import { jobsRoute } from "@routes";
 
 export const buildApp = () => {
     // create the app with basic logger enabled
@@ -34,6 +35,9 @@ export const buildApp = () => {
 
     // Register routes
     app.register(registerRoutesPlugin);
+
+    // Register jobs route
+    app.register(jobsRoute);
 
     app.get("/", async () => ({
         status: "ok",
